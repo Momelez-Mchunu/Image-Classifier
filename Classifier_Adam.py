@@ -5,7 +5,11 @@ import torch.utils.data as data
 from torchvision import datasets
 from torchvision.transforms import ToTensor, Lambda, Compose,transforms
 
-
+def accuracy(logits, target):
+    predicted = logits.argmax(dim=1)
+    return (predicted == target).type(torch.float).mean()
+def flatten(data):
+    return data.reshape(-1)
 class network(nn.Module):
     def __init__(self):
         super(network,self).__init__()
@@ -20,4 +24,4 @@ class network(nn.Module):
         output = self.net(input)
         return output
 model =  network()
-print(model._parameters.items())
+print(model)
