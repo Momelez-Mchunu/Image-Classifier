@@ -5,11 +5,8 @@ import torch.utils.data as data
 from torchvision import datasets
 from torchvision.transforms import ToTensor, Lambda, Compose,transforms
 
-def accuracy(logits, target):
-    predicted = logits.argmax(dim=1)
-    return (predicted == target).type(torch.float).mean()
-def flatten(data):
-    return data.reshape(-1)
+l_function = nn.CrossEntropyLoss()
+accuracy_counter =[]
 class network(nn.Module):
     def __init__(self):
         super(network,self).__init__()
@@ -23,5 +20,22 @@ class network(nn.Module):
         input = torch.flatten(input,1)
         output = self.net(input)
         return output
-model =  network()
+model = network()
 print(model)
+opti = optim.Adam(model.parameters())
+def accuracy(logits, target):
+    predicted = logits.argmax(dim=1)
+    return (predicted == target).type(torch.float).mean()
+def flatten(data):
+    return data.reshape(-1)
+
+def model_train(data,model, optim, loss_function):
+    model.train()
+    for current_batch, (train, expected) in enumerate(data):
+        predicted_value = model(train)
+        loss_value = loss_function(predicted_value,expected)
+
+        opti.zero_grad()
+        loss_value.backward()
+        opti.step()
+
