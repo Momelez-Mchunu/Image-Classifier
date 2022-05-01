@@ -46,3 +46,14 @@ def model_test(data, model):
     logits = model(x)
     acc = accuracy(logits, target)
     accuracy_counter.append(acc)
+
+transform =  transforms.Compose([transforms.ToTensor(),flatten])
+mnist_train_data =  datasets.MNIST(root="./", train = True,download=False,transform=transform)
+mnist_test_data =  datasets.MNIST(root="./",train = False,download=False,transform=transform) 
+train_data = data.DataLoader(mnist_train_data,batch_size=64)
+test_data = data.DataLoader(mnist_test_data,batch_size=64)
+
+for i in range(5):
+    model_train(train_data,model,opti,l_function)
+    model_test(test_data,model)
+print(accuracy_counter)
