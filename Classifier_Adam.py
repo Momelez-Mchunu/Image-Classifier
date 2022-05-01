@@ -39,3 +39,10 @@ def model_train(data,model, optim, loss_function):
         loss_value.backward()
         opti.step()
 
+def model_test(data, model):
+    data_size = len(data.dataset)
+    model.eval()
+    x, target =  next(iter(data))
+    logits = model(x)
+    acc = accuracy(logits, target)
+    accuracy_counter.append(acc)
