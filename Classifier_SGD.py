@@ -59,3 +59,19 @@ def model_test(data, model):
         logits = model(x)
         acc = accuracy(logits, target)
         accuracy_counter.append(acc)
+
+def obtain_trained():
+    model = network()
+    print(model)
+    opti = optim.SGD(model.parameters())
+    l_function = nn.CrossEntropyLoss()
+    transform =  transforms.Compose([transforms.ToTensor(),flatten])
+    mnist_train_data =  datasets.MNIST(root="./", train = True,download=False,transform=transform)
+    mnist_test_data =  datasets.MNIST(root="./",train = False,download=False,transform=transform) 
+    train_data = data.DataLoader(mnist_train_data,batch_size=64,shuffle=True)
+    test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
+    for i in range(10):
+        print(f"--------------------Iteration {i+1}--------------------")
+        model_train(train_data,model,opti,l_function)
+        model_test(test_data,model)
+    torch.save(model,'models/Classifier_SGD.pt')
