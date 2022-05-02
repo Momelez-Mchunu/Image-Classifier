@@ -9,6 +9,7 @@ import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import sys
 
 accuracy_counter =[]
 loss_counter = []
@@ -83,7 +84,7 @@ def plot(accuracy,loss):
     plt.show()
 
 def predict_image(image):
-    saved_model = torch.load('models/Classifier_Adam.pt')
+    saved_model = torch.load('models/Classifier_SGD.pt')
     saved_model.eval()
     image_in =  Image.open(image)
     transformImage = transforms.Compose([transforms.ToTensor()])
@@ -91,3 +92,23 @@ def predict_image(image):
     output = saved_model(image_tensor)
     index =  output.data.cpu().numpy().argmax()
     return index
+
+def main():
+    print(sys.argv[0])
+    if sys.argv[0] =="Classifier_SGD.py":
+        if os.path.exists("models/Classifier_SGD.pt"):
+            user_input = input("Please enter a filepath:\n> ")
+            while (user_input!='exit'):
+                value =  predict_image(user_input)
+                print(f"Classifier: {value}")
+                user_input = input("Please enter a filepath:\n> ")
+        else:
+            obtain_trained()
+            print("Done!")
+            user_input = input("Please enter a filepath:\n> ")
+            while (user_input!='exit'):
+                value =  predict_image(user_input)
+                print(f"Classifier: {value}")
+                user_input = input("Please enter a filepath:\n> ")
+if __name__ == "__main__":
+    main()
