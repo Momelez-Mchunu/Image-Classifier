@@ -75,3 +75,9 @@ def obtain_trained():
         model_train(train_data,model,opti,l_function)
         model_test(test_data,model)
     torch.save(model,'models/Classifier_SGD.pt')
+def plot(accuracy,loss):
+    plt.plot(accuracy,label='Validation Accuraccy')
+    plt.plot(loss,label='Training Loss')
+    plt.legend(frameon=False)
+    plt.savefig('plot.png')
+    plt.show()
