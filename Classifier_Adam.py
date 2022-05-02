@@ -46,8 +46,10 @@ def model_train(data,model,optim,loss_function):
         optim.zero_grad()
         loss_value.backward()
         optim.step()
-    if current_batch%100==0:
-        current = current_batch*len(train)
+        if current_batch%100==0:
+            current = current_batch*len(train)
+            percentage_done =  round(current/size,2)*100
+            print(f"{percentage_done}% done")
     
     loss_counter.append(torch.tensor(model_loss).mean())
 def model_test(data, model):
@@ -69,6 +71,7 @@ def obtain_trained():
     train_data = data.DataLoader(mnist_train_data,batch_size=64,shuffle=True)
     test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
     for i in range(10):
+        print(f"--------------------Iteration {i+1}--------------------")
         model_train(train_data,model,opti,l_function)
         model_test(test_data,model)
     torch.save(model,'models/Classifier_Adam.pt')
@@ -90,14 +93,26 @@ def predict_image(image):
 
 # print(predict_image("MNIST_JPGS/trainingSample/img_3.jpg"))
 def main():
-    obtain_trained()
-    print(predict_image("MNIST_JPGS/trainingSample/img_3.jpg"))
-    if os.path.exists("model/Classifier_Adam.pt"):
-        #Get image path and call predict image fn
-        pass
+    #obtain_trained()
+    count =0
+    #print(predict_image("MNIST_JPGS/trainingSample/img_3.jpg"))
+    if os.path.exists("models/Classifier_Adam.pt"):
+        user_input = input("Please enter a filepath:\n> ")
+        while (user_input!='exit'):
+            value =  predict_image(user_input)
+            print(f"Classifier: {value}")
+            user_input = input("Please enter a filepath:\n> ")
     else:
-        pass
-        # get imag
+        obtain_trained()
+        print("Done!")
+        user_input = input("Please enter a filepath:\n> ")
+        while (user_input!='exit'):
+            value =  predict_image(user_input)
+            print(f"Classifier: {value}")
+            user_input = input("Please enter a filepath:\n> ")
+
+    
+
 
 if __name__ == "__main__":
     main()
