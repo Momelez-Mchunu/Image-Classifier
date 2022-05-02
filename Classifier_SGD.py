@@ -79,5 +79,15 @@ def plot(accuracy,loss):
     plt.plot(accuracy,label='Validation Accuraccy')
     plt.plot(loss,label='Training Loss')
     plt.legend(frameon=False)
-    plt.savefig('plot.png')
+    plt.savefig('plot_SGD.png')
     plt.show()
+
+def predict_image(image):
+    saved_model = torch.load('models/Classifier_Adam.pt')
+    saved_model.eval()
+    image_in =  Image.open(image)
+    transformImage = transforms.Compose([transforms.ToTensor()])
+    image_tensor = transformImage(image_in)
+    output = saved_model(image_tensor)
+    index =  output.data.cpu().numpy().argmax()
+    return index
