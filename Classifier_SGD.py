@@ -49,3 +49,13 @@ def model_train(data,model,optim,loss_function):
             current = current_batch*len(train)
             percentage_done =  round(current/size,2)*100
             print(f"{percentage_done}% done")
+    loss_counter.append(torch.tensor(model_loss).mean())
+
+def model_test(data, model):
+    data_size = len(data.dataset)
+    model.eval()
+    with torch.no_grad():
+        x, target =  next(iter(data))
+        logits = model(x)
+        acc = accuracy(logits, target)
+        accuracy_counter.append(acc)
