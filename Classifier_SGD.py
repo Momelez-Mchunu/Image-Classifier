@@ -32,3 +32,20 @@ def accuracy(logits, target):
     return (predicted == target).type(torch.float).mean()
 def flatten(data):
     return data.reshape(-1)
+
+def model_train(data,model,optim,loss_function):
+    size=  len(data.dataset)
+    model.train()
+    model_loss=[]
+    
+    for current_batch, (train, expected) in enumerate(data):
+        predicted_value = model(train)
+        loss_value = loss_function(predicted_value,expected)
+        model_loss.append(loss_value.detach())
+        optim.zero_grad()
+        loss_value.backward()
+        optim.step()
+        if current_batch%100==0:
+            current = current_batch*len(train)
+            percentage_done =  round(current/size,2)*100
+            print(f"{percentage_done}% done")
