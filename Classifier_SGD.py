@@ -26,3 +26,9 @@ class network(nn.Module):
         input = torch.flatten(input,1)
         output = self.net(input)
         return output
+    
+def accuracy(logits, target):
+    predicted = logits.argmax(dim=1)
+    return (predicted == target).type(torch.float).mean()
+def flatten(data):
+    return data.reshape(-1)
