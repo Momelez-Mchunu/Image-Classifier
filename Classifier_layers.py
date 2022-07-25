@@ -20,7 +20,9 @@ class network(nn.Module):
         self.net = nn.Sequential(
             nn.Linear(784,512),
             nn.ReLU(),
-            nn.Linear(512,10),
+            nn.Linear(512,64),
+            nn.Tanh(),
+            nn.Linear(64,10),
             nn.Softmax(dim=1)
         )
     def forward(self,input):
@@ -64,7 +66,7 @@ def model_test(data, model):
 def obtain_trained():
     model = network()
     print(model)
-    opti = optim.Adam(model.parameters())
+    opti = optim.SGD(model.parameters(),lr=1e-3)
     l_function = nn.CrossEntropyLoss()
     transform =  transforms.Compose([transforms.ToTensor(),flatten])
     mnist_train_data =  datasets.MNIST(root="./", train = True,download=False,transform=transform)
@@ -73,19 +75,18 @@ def obtain_trained():
     test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
     for i in range(10):
         print(f"--------------------Iteration {i+1}--------------------")
-
         model_train(train_data,model,opti,l_function)
         model_test(test_data,model)
-    torch.save(model,'models/Classifier_Adam.pt')
+    torch.save(model,'models/Classifier_layers.pt')
 
 def plot(accuracy,loss):
     plt.plot(accuracy,label='Validation Accuraccy')
     plt.plot(loss,label='Training Loss')
     plt.legend(frameon=False)
-    plt.savefig('plot.png')
+    plt.savefig('plot_Layers.png')
     plt.show()
 def predict_image(image):
-    saved_model = torch.load('models/Classifier_Adam.pt')
+    saved_model = torch.load('models/Classifier_layers.pt')
     saved_model.eval()
     image_in =  Image.open(image)
     transformImage = transforms.Compose([transforms.ToTensor()])
@@ -97,8 +98,8 @@ def predict_image(image):
 # print(predict_image("MNIST_JPGS/trainingSample/img_3.jpg"))
 def main():
     print(sys.argv[0])
-    if sys.argv[0] =="Classifier_Adam.py":
-        if os.path.exists("models/Classifier_Adam.pt"):
+    if sys.argv[0] =="Classifier_layers.py":
+        if os.path.exists("models/Classifier_layers.pt"):
             user_input = input("Please enter a filepath:\n> ")
             while (user_input!='exit'):
                 value =  predict_image(user_input)

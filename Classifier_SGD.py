@@ -52,11 +52,14 @@ def model_train(data,model,optim,loss_function):
             print(f"{percentage_done}% done")
     loss_counter.append(torch.tensor(model_loss).mean())
 
-def model_test(data, model):
-    data_size = len(data.dataset)
+def model_test(model):
+    transform =  transforms.Compose([transforms.ToTensor(),flatten])
+    mnist_test_data =  datasets.MNIST(root="./",train = False,download=False,transform=transform)
+    test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
+    data_size = len(test_data)
     model.eval()
     with torch.no_grad():
-        x, target =  next(iter(data))
+        x, target =  next(iter(test_data))
         logits = model(x)
         acc = accuracy(logits, target)
         accuracy_counter.append(acc)
@@ -64,18 +67,17 @@ def model_test(data, model):
 def obtain_trained():
     model = network()
     print(model)
-    opti = optim.SGD(model.parameters())
+    opti = optim.SGD(model.parameters(),lr=1e-3)
     l_function = nn.CrossEntropyLoss()
     transform =  transforms.Compose([transforms.ToTensor(),flatten])
     mnist_train_data =  datasets.MNIST(root="./", train = True,download=False,transform=transform)
-    mnist_test_data =  datasets.MNIST(root="./",train = False,download=False,transform=transform) 
     train_data = data.DataLoader(mnist_train_data,batch_size=64,shuffle=True)
-    test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
     for i in range(10):
         print(f"--------------------Iteration {i+1}--------------------")
         model_train(train_data,model,opti,l_function)
-        model_test(test_data,model)
+        model_test(model)
     torch.save(model,'models/Classifier_SGD.pt')
+
 def plot(accuracy,loss):
     plt.plot(accuracy,label='Validation Accuraccy')
     plt.plot(loss,label='Training Loss')
