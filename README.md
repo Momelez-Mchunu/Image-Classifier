@@ -1,5 +1,6 @@
-## Install 
+## Setup
 -  run ```make install``` to install all the needed packages
+- Create a folder called ```models``` to store the trained models 
 ## Activate Virtual Environment
 - run ```make venv``` to create the virtual environment and activate it
 ## Run the Program
