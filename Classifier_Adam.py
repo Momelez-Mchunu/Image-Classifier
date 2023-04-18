@@ -67,8 +67,8 @@ def obtain_trained():
     opti = optim.Adam(model.parameters())
     l_function = nn.CrossEntropyLoss()
     transform =  transforms.Compose([transforms.ToTensor(),flatten])
-    mnist_train_data =  datasets.MNIST(root="./", train = True,download=False,transform=transform)
-    mnist_test_data =  datasets.MNIST(root="./",train = False,download=False,transform=transform) 
+    mnist_train_data =  datasets.MNIST(root="./", train = True,download=True,transform=transform)
+    mnist_test_data =  datasets.MNIST(root="./",train = False,download=True,transform=transform) 
     train_data = data.DataLoader(mnist_train_data,batch_size=64,shuffle=True)
     test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
     for i in range(10):
