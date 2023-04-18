@@ -54,7 +54,7 @@ def model_train(data,model,optim,loss_function):
 
 def model_test(model):
     transform =  transforms.Compose([transforms.ToTensor(),flatten])
-    mnist_test_data =  datasets.MNIST(root="./",train = False,download=False,transform=transform)
+    mnist_test_data =  datasets.MNIST(root="./",train = False,download=True,transform=transform)
     test_data = data.DataLoader(mnist_test_data,batch_size=64,shuffle=True)
     data_size = len(test_data)
     model.eval()
